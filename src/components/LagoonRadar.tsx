@@ -51,7 +51,7 @@ export const LagoonRadar: React.FC<LagoonRadarProps> = ({
   };
 
   return (
-    <div className="px-4 sm:px-6 max-w-2xl mx-auto w-full mb-6">
+    <div className="px-4 sm:px-6 max-w-4xl mx-auto w-full mb-6">
       <div className="bg-[#eceef0] rounded-3xl p-4 sm:p-5 shadow-xs border border-[#e0e3e5] relative overflow-hidden">
         {/* Lightweight Cartographic Dorsoduro Radar Grid (preserves Google Maps API quota until GIS Map is launched) */}
         <div className="relative w-full h-48 sm:h-56 bg-gradient-to-br from-[#0f172a] via-[#131b2e] to-[#1e293b] rounded-2xl overflow-hidden border border-[#c6c6cd]/40 shadow-inner">
@@ -106,13 +106,13 @@ export const LagoonRadar: React.FC<LagoonRadarProps> = ({
 
           {/* Top Status Pill */}
           <div className="absolute top-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between gap-2 pointer-events-none">
-            <div className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-bold text-[#0f172a] shadow-xs">
-              <Compass className="w-3 h-3 text-[#b91c1c]" />
-              <span>Venice Lagoon GIS • {MONUMENTS.length} Surveyed Works</span>
+            <div className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-bold text-[#0f172a] shadow-xs min-w-0">
+              <Compass className="w-3 h-3 text-[#b91c1c] shrink-0" />
+              <span className="truncate">Venice Lagoon GIS • {MONUMENTS.length} Surveyed Works</span>
             </div>
 
             {quotaExceeded && (
-              <span className="bg-amber-100/95 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full text-[10px] font-semibold shadow-xs">
+              <span className="bg-amber-100/95 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full text-[10px] font-semibold shadow-xs shrink-0">
                 Offline Vector Mode
               </span>
             )}
@@ -175,20 +175,21 @@ export const LagoonRadar: React.FC<LagoonRadarProps> = ({
         </div>
 
         {/* Bottom Metadata & Controls */}
-        <div className="mt-4 flex items-center justify-between">
-          <div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
             <h3 className="font-display text-base font-bold text-[#191c1e] leading-snug">
               GIS Radar
             </h3>
-            <p className="carto-mono text-xs text-[#45464d] mt-0.5">
+            <p className="carto-mono text-xs text-[#45464d] mt-0.5 truncate">
               45.4371° N, 12.3326° E • {lastScanTime}
             </p>
           </div>
 
           <button
+            type="button"
             onClick={handleScan}
             disabled={isScanning}
-            className="flex items-center gap-1.5 bg-[#fee2e2] hover:bg-[#fecaca] active:scale-95 transition text-[#b91c1c] px-3.5 py-2 rounded-2xl text-xs font-semibold shadow-2xs cursor-pointer"
+            className="min-h-[40px] flex items-center gap-1.5 bg-[#fee2e2] hover:bg-[#fecaca] active:scale-95 transition text-[#b91c1c] px-3.5 py-2 rounded-2xl text-xs font-semibold shadow-2xs cursor-pointer shrink-0"
           >
             <RotateCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
             <span>{isScanning ? 'Scanning...' : 'Scan'}</span>
@@ -196,8 +197,8 @@ export const LagoonRadar: React.FC<LagoonRadarProps> = ({
         </div>
 
         {/* Announcement Row */}
-        <div className="mt-3 pt-3 border-t border-[#d8dadc] flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-[#45464d] truncate pr-2">
+        <div className="mt-3 pt-3 border-t border-[#d8dadc] flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2 text-[#45464d] min-w-0 flex-1">
             <span className="w-2 h-2 rounded-full bg-[#ef4444] shrink-0"></span>
             <span className="truncate">
               {DATASET_STATS.statuesCount} statues, {DATASET_STATS.reliefsCount} reliefs &amp;{' '}
@@ -206,8 +207,9 @@ export const LagoonRadar: React.FC<LagoonRadarProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={onLaunchGis}
-            className="shrink-0 flex items-center gap-1 font-bold text-[#b91c1c] hover:underline cursor-pointer"
+            className="shrink-0 flex items-center gap-1 font-bold text-[#b91c1c] hover:underline cursor-pointer min-h-[32px]"
           >
             <span>Launch GIS</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

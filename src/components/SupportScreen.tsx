@@ -107,8 +107,8 @@ export const SupportScreen: React.FC<SupportScreenProps> = ({
               key={col.id}
               className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-2xs space-y-3"
             >
-              <div className="flex items-center justify-between gap-3">
-                <div>
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
                   <div className="font-bold text-sm text-[#111827]">
                     {col.name}
                   </div>
@@ -118,8 +118,10 @@ export const SupportScreen: React.FC<SupportScreenProps> = ({
                 </div>
 
                 <button
+                  type="button"
+                  aria-expanded={isEditing}
                   onClick={() => handleOpenDonateField(col.id)}
-                  className="shrink-0 px-4 py-2 bg-[#b91c1c] hover:bg-[#991b1b] text-xs font-bold text-white rounded-lg transition active:scale-95 cursor-pointer"
+                  className="shrink-0 min-h-[40px] px-4 py-2 bg-[#b91c1c] hover:bg-[#991b1b] text-xs font-bold text-white rounded-lg transition active:scale-95 cursor-pointer whitespace-nowrap"
                 >
                   Donate Now
                 </button>
@@ -158,8 +160,9 @@ export const SupportScreen: React.FC<SupportScreenProps> = ({
                   />
 
                   <button
+                    type="button"
                     onClick={() => handleConfirmDonation(col.id, col.name)}
-                    className="shrink-0 px-4 py-2 bg-black hover:bg-[#191c1e] text-white text-xs font-bold rounded-lg transition active:scale-95 cursor-pointer"
+                    className="shrink-0 min-h-[40px] px-4 py-2 bg-black hover:bg-[#191c1e] text-white text-xs font-bold rounded-lg transition active:scale-95 cursor-pointer"
                   >
                     Submit
                   </button>

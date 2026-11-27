@@ -35,12 +35,18 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
         {/* Left: PreserVenice Official Logo */}
         <div className="flex items-center gap-3 shrink-0">
-          <img 
-            src="/assets/aistudio/pv_logo_60_588922ef.png" 
-            alt="PreserVenice" 
-            className="h-12 sm:h-14 w-auto object-contain cursor-pointer"
+          <button
+            type="button"
             onClick={() => onNavigateTab?.('explore')}
-          />
+            className="rounded-xl p-1 -m-1 cursor-pointer focus-visible:outline-none"
+            aria-label="PreserVenice Explore home"
+          >
+            <img
+              src="/assets/aistudio/pv_logo_60_588922ef.png"
+              alt="PreserVenice"
+              className="h-12 sm:h-14 w-auto object-contain"
+            />
+          </button>
         </div>
 
         {/* Right: PreserVenice Official Mission Statement in Italics */}
@@ -77,8 +83,8 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Search Bar & GIS Cartography Launch */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mb-3">
         {/* Search Input */}
-        <div className="relative flex-1 flex items-center">
-          <div className="absolute left-3.5 text-[#9ca3af] pointer-events-none">
+        <div className="relative flex-1 flex items-center min-w-0">
+          <div className="absolute left-3.5 text-[#6b7280] pointer-events-none">
             <Search className="w-4 h-4" />
           </div>
           <input
@@ -86,13 +92,15 @@ export const Header: React.FC<HeaderProps> = ({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search statues, monuments, reliefs, or GIS coordinates..."
-            className="w-full bg-[#f9fafb] hover:bg-[#f3f4f6] focus:bg-white text-base sm:text-sm text-[#111827] placeholder-[#6b7280] rounded-xl pl-10 pr-10 py-2.5 border border-[#e5e7eb] focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/30 focus:border-[#b91c1c] transition"
+            aria-label="Search Venetian artworks and GIS coordinates"
+            className="w-full bg-[#f9fafb] hover:bg-[#f3f4f6] focus:bg-white text-base sm:text-sm text-[#111827] placeholder-[#6b7280] rounded-xl pl-10 pr-11 py-2.5 border border-[#e5e7eb] focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/30 focus:border-[#b91c1c] transition"
           />
           <button
+            type="button"
             onClick={onOpenFilter}
-            className="absolute right-2.5 w-7 h-7 rounded-lg hover:bg-black/5 active:scale-95 flex items-center justify-center transition"
+            className="absolute right-2 w-8 h-8 rounded-lg hover:bg-black/5 active:scale-95 flex items-center justify-center transition cursor-pointer"
             aria-label="Filter Options"
-            title="Filter by Sestiere, Era, Material"
+            title="Filter by Sestiere, Type, Attributes"
           >
             <SlidersHorizontal className="w-4 h-4 text-[#b91c1c]" />
           </button>
@@ -100,61 +108,70 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* GIS Cartography Button */}
         <button
+          type="button"
           onClick={onOpenGisMap}
-          className="shrink-0 flex items-center justify-center gap-2 bg-[#b91c1c] hover:bg-[#991b1b] active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
+          className="shrink-0 min-h-[42px] flex items-center justify-center gap-2 bg-[#b91c1c] hover:bg-[#991b1b] active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-xs transition cursor-pointer whitespace-nowrap"
         >
-          <Layers className="w-4 h-4 text-white" />
+          <Layers className="w-4 h-4 text-white shrink-0" />
           <span>Interactive GIS Map</span>
         </button>
       </div>
 
       {/* Category Pills (Statues, Monuments, Reliefs, Surveys) */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
+      <div className="flex flex-nowrap sm:flex-wrap items-center gap-2 overflow-x-auto sm:overflow-visible scroll-x-smooth no-scrollbar pt-1">
         <button
+          type="button"
+          aria-pressed={selectedCategory === 'Statues'}
           onClick={() => onSelectCategory(selectedCategory === 'Statues' ? 'All' : 'Statues')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer ${
+          className={`flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer whitespace-nowrap ${
             selectedCategory === 'Statues'
               ? 'bg-[#000000] text-white shadow-xs'
               : 'bg-[#f3f4f6] text-[#111827] hover:bg-[#e5e7eb] border border-[#e5e7eb]'
           }`}
         >
-          <User className="w-3.5 h-3.5 text-[#0284c7]" />
+          <User className="w-3.5 h-3.5 text-[#0284c7] shrink-0" />
           <span>Statues</span>
         </button>
 
         <button
+          type="button"
+          aria-pressed={selectedCategory === 'Monuments'}
           onClick={() => onSelectCategory(selectedCategory === 'Monuments' ? 'All' : 'Monuments')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer ${
+          className={`flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer whitespace-nowrap ${
             selectedCategory === 'Monuments'
               ? 'bg-[#000000] text-white shadow-xs'
               : 'bg-[#f3f4f6] text-[#111827] hover:bg-[#e5e7eb] border border-[#e5e7eb]'
           }`}
         >
-          <Landmark className="w-3.5 h-3.5 text-[#b91c1c]" />
+          <Landmark className="w-3.5 h-3.5 text-[#b91c1c] shrink-0" />
           <span>Monuments</span>
         </button>
 
         <button
+          type="button"
+          aria-pressed={selectedCategory === 'Reliefs'}
           onClick={() => onSelectCategory(selectedCategory === 'Reliefs' ? 'All' : 'Reliefs')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer ${
+          className={`flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer whitespace-nowrap ${
             selectedCategory === 'Reliefs'
               ? 'bg-[#000000] text-white shadow-xs'
               : 'bg-[#f3f4f6] text-[#111827] hover:bg-[#e5e7eb] border border-[#e5e7eb]'
           }`}
         >
-          <SquareAsterisk className="w-3.5 h-3.5 text-[#ea580c]" />
+          <SquareAsterisk className="w-3.5 h-3.5 text-[#ea580c] shrink-0" />
           <span>Reliefs</span>
         </button>
 
         <button
+          type="button"
+          aria-pressed={selectedCategory === 'Surveys'}
           onClick={() => onSelectCategory(selectedCategory === 'Surveys' ? 'All' : 'Surveys')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer ${
+          className={`flex items-center gap-1.5 min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition shrink-0 cursor-pointer whitespace-nowrap ${
             selectedCategory === 'Surveys'
               ? 'bg-[#000000] text-white shadow-xs'
               : 'bg-[#f3f4f6] text-[#111827] hover:bg-[#e5e7eb] border border-[#e5e7eb]'
           }`}
         >
-          <Scan className="w-3.5 h-3.5 text-[#10b981]" />
+          <Scan className="w-3.5 h-3.5 text-[#10b981] shrink-0" />
           <span>Surveys / 3D Scans</span>
         </button>
       </div>

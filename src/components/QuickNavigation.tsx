@@ -13,8 +13,8 @@ export const QuickNavigation: React.FC<QuickNavigationProps> = ({
   onOpenGis3D,
 }) => {
   return (
-    <section className="px-4 sm:px-6 max-w-2xl mx-auto w-full mb-10">
-      <div className="flex items-center justify-between mb-3.5">
+    <section className="px-4 sm:px-6 max-w-4xl mx-auto w-full mb-10">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3.5">
         <h2 className="font-display text-lg font-bold text-[#111827] tracking-tight">
           Quick Navigation
         </h2>
@@ -26,6 +26,7 @@ export const QuickNavigation: React.FC<QuickNavigationProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Card 1 */}
         <button
+          type="button"
           onClick={() => onSelectCategory('Statues')}
           className="flex flex-col justify-between p-4 bg-white rounded-2xl border border-[#e5e7eb] shadow-2xs hover:shadow-sm hover:border-[#b91c1c]/40 transition text-left active:scale-[0.98] cursor-pointer"
         >
@@ -44,6 +45,7 @@ export const QuickNavigation: React.FC<QuickNavigationProps> = ({
 
         {/* Card 2 */}
         <button
+          type="button"
           onClick={() => onSelectCategory('Reliefs')}
           className="flex flex-col justify-between p-4 bg-white rounded-2xl border border-[#e5e7eb] shadow-2xs hover:shadow-sm hover:border-[#b91c1c]/40 transition text-left active:scale-[0.98] cursor-pointer"
         >
@@ -62,6 +64,7 @@ export const QuickNavigation: React.FC<QuickNavigationProps> = ({
 
         {/* Card 3 */}
         <button
+          type="button"
           onClick={onOpenGis3D}
           className="flex flex-col justify-between p-4 bg-white rounded-2xl border border-[#e5e7eb] shadow-2xs hover:shadow-sm hover:border-[#b91c1c]/40 transition text-left active:scale-[0.98] cursor-pointer"
         >

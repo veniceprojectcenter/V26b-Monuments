@@ -44,6 +44,17 @@ export const FieldSurveyModal: React.FC<FieldSurveyModalProps> = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const handleAcquireLocation = () => {
     setIsLocating(true);
     setLocationStatus('Acquiring GPS location...');
@@ -124,13 +135,19 @@ export const FieldSurveyModal: React.FC<FieldSurveyModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div 
-        className="bg-white w-full max-w-lg max-h-[92vh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e2e8f0]"
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Citizen GIS Survey"
+    >
+      <div
+        className="bg-white w-full max-w-lg max-h-[92dvh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e2e8f0]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#e2e8f0] flex items-center justify-between bg-[#131b2e] text-white">
+        <div className="p-4 sm:p-5 border-b border-[#e2e8f0] flex items-center justify-between bg-[#131b2e] text-white shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-[#188ace]/30 flex items-center justify-center text-[#93ccff]">
               <ShieldCheck className="w-4 h-4" />
@@ -146,8 +163,9 @@ export const FieldSurveyModal: React.FC<FieldSurveyModalProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer shrink-0"
             aria-label="Close survey"
           >
             <X className="w-4 h-4" />
@@ -167,7 +185,7 @@ export const FieldSurveyModal: React.FC<FieldSurveyModalProps> = ({
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-5">
+          <form onSubmit={handleSubmit} className="p-5 overflow-y-auto overscroll-contain subtle-scrollbar space-y-5">
             {/* FIELD 1: Image Field */}
             <div>
               <label className="text-xs font-bold text-[#191c1e] block mb-1.5 flex items-center justify-between">

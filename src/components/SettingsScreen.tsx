@@ -13,7 +13,7 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <div className="pt-4 pb-24 px-4 sm:px-6 max-w-2xl mx-auto w-full animate-in fade-in duration-200">
+    <div className="pt-4 pb-24 px-4 sm:px-6 max-w-4xl mx-auto w-full animate-in fade-in duration-200">
       {/* Header */}
       <div className="mb-6">
         <div className="text-[11px] font-bold tracking-wider text-[#b91c1c] uppercase mb-1">
@@ -50,18 +50,20 @@ export const SettingsScreen: React.FC = () => {
                 type="checkbox"
                 checked={sirenAlerts}
                 onChange={(e) => setSirenAlerts(e.target.checked)}
+                aria-label="Enable Acqua Alta Siren Notifications"
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-[#eceef0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#b91c1c]"></div>
+              <div className="w-11 h-6 bg-[#eceef0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#b91c1c] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#b91c1c]"></div>
             </label>
           </div>
 
           {sirenAlerts && (
             <div className="pt-3 border-t border-[#f2f4f6] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <span className="text-xs font-semibold text-[#45464d] shrink-0">
+              <label htmlFor="siren-threshold-select" className="text-xs font-semibold text-[#45464d] shrink-0">
                 Trigger Siren at:
-              </span>
+              </label>
               <select
+                id="siren-threshold-select"
                 value={alertThreshold}
                 onChange={(e) => setAlertThreshold(e.target.value)}
                 className="w-full sm:w-auto max-w-full min-w-0 bg-[#eceef0] rounded-xl px-3 py-2 text-base sm:text-xs font-bold text-[#191c1e] cursor-pointer truncate"
@@ -76,12 +78,12 @@ export const SettingsScreen: React.FC = () => {
 
         {/* Offline Vector Tiles & Mesh Storage */}
         <div className="bg-white p-5 rounded-3xl border border-[#e2e8f0] shadow-2xs space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#eceef0] flex items-center justify-center text-[#191c1e]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[#eceef0] flex items-center justify-center text-[#191c1e] shrink-0">
                 <WifiOff className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h4 className="font-display font-bold text-sm text-[#191c1e]">
                   Offline Venice GIS Map Cache
                 </h4>
@@ -93,8 +95,9 @@ export const SettingsScreen: React.FC = () => {
           </div>
 
           <button
+            type="button"
             onClick={handleDownloadOfflineTiles}
-            className="w-full py-2.5 px-4 bg-[#eceef0] hover:bg-[#e0e3e5] active:scale-[0.98] transition rounded-2xl text-xs font-bold text-[#191c1e] flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full min-h-[44px] py-2.5 px-4 bg-[#eceef0] hover:bg-[#e0e3e5] active:scale-[0.98] transition rounded-2xl text-xs font-bold text-[#191c1e] flex items-center justify-center gap-2 cursor-pointer"
           >
             {offlineCacheSaved ? (
               <>

@@ -71,6 +71,21 @@ export default function App() {
     }
   }, [isGisMapOpen]);
 
+  const hasOpenModal =
+    isGisMapOpen ||
+    Boolean(selectedMonumentForModal) ||
+    isFilterModalOpen ||
+    isFieldSurveyModalOpen;
+
+  React.useEffect(() => {
+    if (!hasOpenModal) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [hasOpenModal]);
+
   const mapsApiKey = ((import.meta as any).env.VITE_GOOGLE_MAPS_API_KEY as string) || '';
 
   // Filter parameters aligned strictly with Survey123 dataset fields
@@ -134,9 +149,7 @@ export default function App() {
 
       {/* Explore Tab (kept mounted via CSS to avoid remounting Google Map across tab switches) */}
       <main
-        className={
-          activeTab === 'explore' ? 'pb-20 animate-in fade-in duration-200' : 'hidden'
-        }
+        className={activeTab === 'explore' ? 'pb-20' : 'hidden'}
         aria-hidden={activeTab !== 'explore'}
       >
         {/* Header with Search and Categories */}

@@ -43,6 +43,17 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
     setHeroImageLoaded(false);
   }, [monument?.id]);
 
+  useEffect(() => {
+    if (!monument || isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [monument, isLightboxOpen, onClose]);
+
   if (!monument) return null;
 
   const photos = monument.galleryImages.length > 0 ? monument.galleryImages : [monument.imageUrl];
@@ -57,25 +68,39 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={monument.title}
+    >
       <div
-        className="bg-white w-full max-w-xl max-h-[92vh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e2e8f0]"
+        className="bg-white w-full max-w-xl max-h-[92dvh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e2e8f0]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Sticky Modal Header */}
-        <div
-          onClick={() => {
-            if (heroImageLoaded) setIsLightboxOpen(true);
-          }}
-          className={`relative h-64 sm:h-72 w-full bg-[#131b2e] shrink-0 overflow-hidden group ${
-            heroImageLoaded ? 'cursor-zoom-in' : 'cursor-default'
-          }`}
-          title={
-            heroImageLoaded
-              ? 'Click to enlarge and view full uncropped artwork'
-              : 'Reference photograph pending upload'
-          }
-        >
+        <div className="relative h-64 sm:h-72 w-full bg-[#131b2e] shrink-0 overflow-hidden group">
+          <button
+            type="button"
+            disabled={!heroImageLoaded}
+            onClick={() => {
+              if (heroImageLoaded) setIsLightboxOpen(true);
+            }}
+            className={`block w-full h-full ${
+              heroImageLoaded ? 'cursor-zoom-in' : 'cursor-default'
+            }`}
+            title={
+              heroImageLoaded
+                ? 'Click to enlarge and view full uncropped artwork'
+                : 'Reference photograph pending upload'
+            }
+            aria-label={
+              heroImageLoaded
+                ? `Enlarge photograph for ${monument.title}`
+                : monument.title
+            }
+          >
           <ArtworkImage
             src={currentPhoto}
             alt={monument.title}
@@ -85,15 +110,13 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
             onStatusChange={setHeroImageLoaded}
             className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
           />
+          </button>
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none"></div>
 
           {/* Close Button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
+            onClick={onClose}
             className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center transition active:scale-95 z-10 cursor-pointer"
             aria-label="Close"
           >
@@ -106,13 +129,13 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
           </div>
 
           {/* Coordinate Tag, Enlarge Hint & Photo Counter */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 pointer-events-none">
-            <span className="bg-black/75 text-white backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono flex items-center gap-1.5 pointer-events-auto">
-              <MapPin className="w-3.5 h-3.5 text-[#ff6d4d]" />
-              {monument.coordinates.formatted}
+          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <span className="bg-black/75 text-white backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono flex items-center gap-1.5 pointer-events-auto min-w-0 max-w-full truncate">
+              <MapPin className="w-3.5 h-3.5 text-[#ff6d4d] shrink-0" />
+              <span className="truncate">{monument.coordinates.formatted}</span>
             </span>
 
-            <div className="flex items-center gap-1.5 pointer-events-auto">
+            <div className="flex items-center gap-1.5 pointer-events-auto shrink-0">
               {photos.length > 1 && (
                 <div className="flex items-center gap-1.5 bg-black/70 p-1 rounded-full">
                   {photos.map((imgUrl, idx) => (
@@ -155,7 +178,7 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
 
         {/* Multi-Photo Strip if > 1 image */}
         {photos.length > 1 && (
-          <div className="px-6 py-2.5 bg-[#f9fafb] border-b border-[#e5e7eb] flex items-center gap-2 overflow-x-auto">
+          <div className="px-6 py-2.5 bg-[#f9fafb] border-b border-[#e5e7eb] flex items-center gap-2 overflow-x-auto scroll-x-smooth shrink-0">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#6b7280] shrink-0 mr-1">
               Attachments ({photos.length}):
             </span>
@@ -194,8 +217,9 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
         )}
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-[#e2e8f0] px-6 bg-[#f7f9fb]">
+        <div className="flex border-b border-[#e2e8f0] px-6 bg-[#f7f9fb] shrink-0">
           <button
+            type="button"
             onClick={() => setActiveTab('overview')}
             className={`py-3 text-xs font-bold border-b-2 mr-6 transition cursor-pointer ${
               activeTab === 'overview'
@@ -206,6 +230,7 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
             Survey123 Overview
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('gis-data')}
             className={`py-3 text-xs font-bold border-b-2 mr-6 transition cursor-pointer ${
               activeTab === 'gis-data'
@@ -218,7 +243,7 @@ export const MonumentDetailModal: React.FC<MonumentDetailModalProps> = ({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5 text-[#191c1e]">
+        <div className="p-6 overflow-y-auto overscroll-contain subtle-scrollbar space-y-5 text-[#191c1e]">
           {activeTab === 'overview' && (
             <>
               <div>

@@ -797,8 +797,22 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
     return `${effectiveRoute.stops.length} stops`;
   })();
 
+  useEffect(() => {
+    if (!isOpen || isTrailPhotoModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isTrailPhotoModalOpen, onClose]);
+
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="PreserVenice GIS Cartography"
       className={`fixed inset-0 z-50 bg-[#131b2e] flex-col overflow-hidden ${
         isOpen ? 'flex animate-in fade-in duration-200' : 'hidden pointer-events-none'
       }`}
@@ -872,22 +886,23 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
 
       {/* Active Navigation Route Banner */}
       {effectiveRoute && (
-        <div className="bg-[#0f172a] text-white px-3 sm:px-4 py-2 border-b border-white/10 flex items-center justify-between gap-2 text-xs shrink-0 z-20 shadow-inner">
-          <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+        <div className="bg-[#0f172a] text-white px-3 sm:px-4 py-2 border-b border-white/10 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 text-xs shrink-0 z-20 shadow-inner">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <div className="w-6 h-6 rounded-full bg-[#0284c7] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Navigation className="w-3.5 h-3.5 fill-current" />
             </div>
 
-            <div className="flex items-center flex-wrap gap-x-2 gap-y-1 min-w-0">
+            <div className="flex items-center flex-wrap gap-x-2 gap-y-1 min-w-0 flex-1">
               <span className="font-bold text-[#93ccff] uppercase tracking-wider text-[10px] shrink-0">
                 ACTIVE ROUTE:
               </span>
-              <span className="font-semibold text-white truncate max-w-[130px] sm:max-w-xs shrink-0">
+              <span className="font-semibold text-white truncate max-w-[160px] sm:max-w-xs min-w-0">
                 {effectiveRoute.number} — {effectiveRoute.title}
               </span>
 
               {/* Next / Target stop badge */}
-              <div
+              <button
+                type="button"
                 onClick={() => {
                   if (navTargetMonument) {
                     setSelectedMonument(navTargetMonument);
@@ -899,10 +914,10 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
                     setCurrentZoom(17);
                   }
                 }}
-                className="flex items-center gap-1.5 bg-[#0284c7]/40 hover:bg-[#0284c7]/60 border border-[#38bdf8]/60 text-white px-2 py-0.5 rounded-md text-[11px] font-semibold shrink-0 shadow-xs cursor-pointer transition"
+                className="flex items-center gap-1.5 bg-[#0284c7]/40 hover:bg-[#0284c7]/60 border border-[#38bdf8]/60 text-white px-2 py-0.5 rounded-md text-[11px] font-semibold max-w-full min-w-0 shadow-xs cursor-pointer transition"
                 title="Target artwork on route (click to view on map)"
               >
-                <span className="text-[#93ccff] font-medium text-[10px] uppercase tracking-wider">
+                <span className="text-[#93ccff] font-medium text-[10px] uppercase tracking-wider shrink-0">
                   {navigationPhase === 'approach'
                     ? 'Stop 1:'
                     : navTargetStopIndex === effectiveRoute.stops.length - 1
@@ -912,7 +927,7 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
                 <span className="text-white font-bold truncate max-w-[130px] sm:max-w-[200px]">
                   {navTargetMonument?.title || 'Waypoint'}
                 </span>
-              </div>
+              </button>
 
               <span className="text-[#bec6e0] font-mono text-[11px] shrink-0">
                 ({routeSummaryBadgeText})
@@ -1030,7 +1045,7 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
       )}
 
       {/* Unified Non-Stacking Filter & Navigation Ribbon */}
-      <div className="bg-white/95 backdrop-blur-md px-3 sm:px-4 py-2 border-b border-[#e2e8f0] flex items-center gap-2 overflow-x-auto no-scrollbar z-20 shrink-0 select-none">
+      <div className="bg-white/95 backdrop-blur-md px-3 sm:px-4 py-2 border-b border-[#e2e8f0] flex items-center gap-2 overflow-x-auto scroll-x-smooth no-scrollbar z-20 shrink-0 select-none">
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => setActiveLayer('all')}
@@ -1340,7 +1355,7 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
 
               {/* Expandable Full Street-by-Street Step List */}
               {isStepsExpanded && activeNavData.steps.length > 0 && (
-                <div className="mt-3 pt-2 border-t border-white/10 max-h-44 overflow-y-auto space-y-2 pr-1">
+                <div className="mt-3 pt-2 border-t border-white/10 max-h-44 overflow-y-auto overscroll-contain subtle-scrollbar space-y-2 pr-1">
                   {activeNavData.steps.map((step, sIdx) => {
                     const isCurrent = sIdx === activeNavData.liveStepIndex;
                     return (

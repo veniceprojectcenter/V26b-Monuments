@@ -186,10 +186,10 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
   };
 
   return (
-    <div className="pt-4 pb-24 px-4 sm:px-6 max-w-2xl mx-auto w-full animate-in fade-in duration-200">
+    <div className="pt-4 pb-24 px-4 sm:px-6 max-w-4xl mx-auto w-full animate-in fade-in duration-200">
       {/* Top Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
-        <div>
+        <div className="min-w-0">
           <div className="text-[11px] font-bold tracking-wider text-[#b91c1c] uppercase mb-1">
             NARRATIVE EXPEDITIONS
           </div>
@@ -202,6 +202,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
         </div>
 
         <button
+          type="button"
           onClick={() => {
             if (activeTrail) {
               onOpenGisRoute(activeTrail, currentStepIndex);
@@ -211,26 +212,27 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
               onOpenGisMap();
             }
           }}
-          className="shrink-0 flex items-center gap-1.5 bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#111827] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#e5e7eb] transition cursor-pointer"
+          className="shrink-0 min-h-[40px] flex items-center gap-1.5 bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#111827] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#e5e7eb] transition cursor-pointer whitespace-nowrap"
         >
-          <Compass className="w-3.5 h-3.5 text-[#b91c1c]" />
+          <Compass className="w-3.5 h-3.5 text-[#b91c1c] shrink-0" />
           <span>GIS View</span>
         </button>
       </div>
 
       {/* My Custom Itinerary Banner if user has added monuments */}
       {customMonuments.length > 0 && (
-        <div className="mb-6 bg-gradient-to-br from-[#131b2e] to-[#0f172a] text-white rounded-3xl p-5 shadow-sm border border-white/10">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-6 bg-gradient-to-br from-[#131b2e] to-[#0f172a] text-white rounded-3xl p-5 shadow-sm border border-white/10 overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
             <span className="text-[10px] font-mono uppercase tracking-wider text-[#93ccff] flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#188ace] animate-pulse"></span>
-              Custom User Route
+              <span className="w-2 h-2 rounded-full bg-[#188ace] shrink-0" aria-hidden="true"></span>
+              <span>Custom User Route</span>
             </span>
             <button
+              type="button"
               onClick={onClearCustomRoute}
-              className="text-xs text-white/60 hover:text-white flex items-center gap-1 transition cursor-pointer"
+              className="min-h-[32px] px-2 text-xs text-white/75 hover:text-white flex items-center gap-1 transition cursor-pointer"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-3.5 h-3.5 shrink-0" />
               <span>Clear</span>
             </button>
           </div>
@@ -238,7 +240,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
           <h3 className="font-display font-bold text-lg text-white">
             My Venetian Discovery Itinerary
           </h3>
-          <p className="text-xs text-[#bec6e0] mt-0.5">
+          <p className="text-xs text-[#bec6e0] mt-0.5 tabular-nums">
             {customMonuments.length} monument{customMonuments.length === 1 ? '' : 's'} selected
             {customMonuments.length > 1
               ? ` • ${customDirectKm.toFixed(2)} km direct span (pedestrian route computed on map)`
@@ -249,39 +251,43 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
             {customMonuments.map((m, idx) => (
               <div
                 key={m.id}
-                className="flex items-center justify-between bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl text-xs transition"
+                className="flex items-center justify-between gap-2 bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl text-xs transition min-w-0"
               >
-                <div
+                <button
+                  type="button"
                   onClick={() => onSelectMonument(m)}
-                  className="flex items-center gap-2.5 cursor-pointer truncate flex-1 pr-2"
+                  className="flex items-center gap-2.5 cursor-pointer min-w-0 flex-1 text-left"
                 >
-                  <span className="w-5 h-5 rounded-full bg-[#b91c1c] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-5 h-5 rounded-full bg-[#b91c1c] text-white text-[10px] font-bold flex items-center justify-center shrink-0 tabular-nums">
                     {idx + 1}
                   </span>
                   <span className="font-semibold text-white truncate">{m.title}</span>
-                  <span className="text-[10px] text-white/70 font-mono shrink-0">
+                  <span className="text-[10px] text-white/70 font-mono shrink-0 hidden sm:inline">
                     {m.regionDisplay}
                   </span>
-                </div>
+                </button>
 
                 <button
+                  type="button"
                   onClick={() => onRemoveFromRoute(m.id)}
-                  className="w-6 h-6 rounded-full hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition cursor-pointer"
+                  className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition cursor-pointer shrink-0"
                   title="Remove from Route"
+                  aria-label={`Remove ${m.title} from route`}
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             ))}
           </div>
 
           <button
+            type="button"
             onClick={() => {
               onOpenGisRoute(buildCustomTrail(), 0);
             }}
-            className="mt-4 w-full bg-[#b91c1c] hover:bg-[#991b1b] text-white py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-[0.98] cursor-pointer"
+            className="mt-4 w-full min-h-[44px] bg-[#b91c1c] hover:bg-[#991b1b] text-white py-2.5 px-4 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-[0.98] cursor-pointer"
           >
-            <Navigation className="w-3.5 h-3.5" />
+            <Navigation className="w-3.5 h-3.5 shrink-0" />
             <span>Map Custom Route on Lagoon GIS</span>
           </button>
         </div>
@@ -289,9 +295,9 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
 
       {/* Active Trail Detail / Navigation Drawer */}
       {activeTrail && (
-        <div className="mb-6 bg-white rounded-3xl p-5 border-2 border-[#b91c1c] shadow-lg animate-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center justify-between mb-3">
-            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-bold tracking-wider">
+        <div className="mb-6 bg-white rounded-3xl p-4 sm:p-5 border-2 border-[#b91c1c] shadow-lg animate-in slide-in-from-top-4 duration-200 overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-bold tracking-wider whitespace-nowrap">
               {activeTrail.number} • ACTIVE TOUR
             </span>
             <button
@@ -342,12 +348,12 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                         : 'bg-[#f9fafb] border-[#e5e7eb]'
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-start justify-between gap-2 min-w-0">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span
-                          className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
+                          className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0 tabular-nums ${
                             isCurrentStep
-                              ? 'bg-[#b91c1c] text-white animate-bounce'
+                              ? 'bg-[#b91c1c] text-white'
                               : isPassed
                               ? 'bg-[#10b981] text-white'
                               : 'bg-black text-white'
@@ -355,11 +361,11 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                         >
                           {isPassed ? <CheckCircle className="w-3.5 h-3.5" /> : index + 1}
                         </span>
-                        <div>
-                          <h5 className="font-display font-bold text-sm text-[#111827]">
+                        <div className="min-w-0 flex-1">
+                          <h5 className="font-display font-bold text-sm text-[#111827] break-words">
                             {monument?.title || 'Venetian Waypoint'}
                           </h5>
-                          <span className="text-[11px] text-[#6b7280]">
+                          <span className="text-[11px] text-[#6b7280] block truncate">
                             {monument?.locationName || monument?.regionDisplay || 'Venice'}
                           </span>
                         </div>
@@ -367,25 +373,26 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
 
                       {monument && (
                         <button
+                          type="button"
                           onClick={() => onSelectMonument(monument)}
-                          className="text-xs font-bold text-[#b91c1c] hover:underline shrink-0 cursor-pointer"
+                          className="min-h-[32px] px-2 text-xs font-bold text-[#b91c1c] hover:underline shrink-0 cursor-pointer"
                         >
                           Inspect
                         </button>
                       )}
                     </div>
 
-                    <p className="text-xs text-[#4b5563] mt-2 italic bg-white/70 p-2 rounded-xl">
+                    <p className="text-xs text-[#4b5563] mt-2 italic bg-white/70 p-2 rounded-xl break-words">
                       "{stop.highlightNote}"
                     </p>
 
-                    <div className="flex items-center gap-3 mt-2 text-[11px] text-[#6b7280]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-[11px] text-[#6b7280]">
                       <span className="flex items-center gap-1">
-                        <Footprints className="w-3 h-3 text-[#b91c1c]" />
+                        <Footprints className="w-3 h-3 text-[#b91c1c] shrink-0" />
                         {index === 0 ? 'Starting stop' : 'Street & bridge route on GIS map'}
                       </span>
                       {stop.walkingDistanceMeters > 0 && (
-                        <span>Direct span: ~{stop.walkingDistanceMeters}m</span>
+                        <span className="tabular-nums">Direct span: ~{stop.walkingDistanceMeters}m</span>
                       )}
                     </div>
                   </div>
@@ -398,6 +405,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
               <div className="mt-4 bg-[#ecfdf5] border border-[#a7f3d0] text-[#065f46] px-3.5 py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between gap-2">
                 <span>{tourCompletedMessage}</span>
                 <button
+                  type="button"
                   onClick={() => setTourCompletedMessage(null)}
                   className="text-[11px] font-bold text-[#047857] hover:underline cursor-pointer shrink-0"
                 >
@@ -405,52 +413,56 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                 </button>
               </div>
             )}
-            <div className="mt-5 flex items-center gap-1.5 sm:gap-2">
+            <div className="mt-5 flex flex-wrap items-center gap-2">
               {!isNavigating ? (
                 <>
                   <button
+                    type="button"
                     onClick={() => {
                       setTourCompletedMessage(null);
                       setIsNavigating(true);
                       setCurrentStepIndex(0);
                       onOpenGisRoute(activeTrail, 0);
                     }}
-                    className="min-w-0 flex-1 bg-black hover:bg-[#111827] text-white px-2.5 sm:px-4 py-3 rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition active:scale-[0.98] cursor-pointer"
+                    className="min-w-[160px] flex-1 min-h-[44px] bg-black hover:bg-[#111827] text-white px-4 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-2 transition active:scale-[0.98] cursor-pointer whitespace-nowrap"
                   >
-                    <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#fee2e2] shrink-0" />
-                    <span className="whitespace-nowrap sm:hidden">Start Tour</span>
-                    <span className="hidden sm:inline whitespace-nowrap">Start Live GIS Walking Tour</span>
+                    <Navigation className="w-3.5 h-3.5 text-[#fee2e2] shrink-0" />
+                    <span className="sm:hidden">Start Tour</span>
+                    <span className="hidden sm:inline">Start Live GIS Walking Tour</span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => onOpenGisRoute(activeTrail, 0)}
-                    className="px-2.5 sm:px-4 bg-[#0284c7] hover:bg-[#0369a1] text-white py-3 rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition active:scale-[0.98] shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+                    className="min-h-[44px] px-4 bg-[#0284c7] hover:bg-[#0369a1] text-white py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm cursor-pointer whitespace-nowrap shrink-0"
                     title="View route line on GIS map"
                   >
-                    <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <Compass className="w-3.5 h-3.5 shrink-0" />
                     <span>GIS Map</span>
                   </button>
                   {isPremadeTrail(activeTrail) && (
                     <button
                       type="button"
                       onClick={scrollToTrailPhotos}
-                      className="px-2.5 sm:px-4 bg-[#fee2e2] hover:bg-[#fecaca] text-[#b91c1c] border border-[#b91c1c]/25 py-3 rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
+                      className="min-h-[44px] px-4 bg-[#fee2e2] hover:bg-[#fecaca] text-[#b91c1c] border border-[#b91c1c]/25 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 tabular-nums"
                       title="View public traveler photos for this trail"
                     >
-                      <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                      <Camera className="w-3.5 h-3.5 shrink-0" />
                       <span>Photos ({trailPhotos.length})</span>
                     </button>
                   )}
                 </>
               ) : (
-                <div className="flex-1 flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2">
+                <div className="flex-1 flex flex-wrap gap-2">
                   <button
+                    type="button"
                     disabled={currentStepIndex === 0}
                     onClick={() => setCurrentStepIndex((idx) => Math.max(idx - 1, 0))}
-                    className="flex-1 min-w-[96px] bg-[#eceef0] disabled:opacity-40 text-[#191c1e] py-3 px-2.5 rounded-full text-[11px] sm:text-xs font-bold transition cursor-pointer whitespace-nowrap"
+                    className="flex-1 min-w-[110px] min-h-[44px] bg-[#eceef0] disabled:opacity-40 text-[#191c1e] py-2.5 px-3 rounded-full text-xs font-bold transition cursor-pointer whitespace-nowrap"
                   >
                     Previous Stop
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       if (currentStepIndex < activeTrail.stops.length - 1) {
                         setCurrentStepIndex((idx) => idx + 1);
@@ -460,13 +472,14 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                         setCurrentStepIndex(0);
                       }
                     }}
-                    className="flex-1 min-w-[96px] bg-[#b91c1c] hover:bg-[#991b1b] text-white py-3 px-2.5 rounded-full text-[11px] sm:text-xs font-bold transition cursor-pointer whitespace-nowrap"
+                    className="flex-1 min-w-[110px] min-h-[44px] bg-[#b91c1c] hover:bg-[#991b1b] text-white py-2.5 px-3 rounded-full text-xs font-bold transition cursor-pointer whitespace-nowrap"
                   >
-                    {currentStepIndex < activeTrail.stops.length - 1 ? 'Next Stop →' : 'Complete Tour 🎉'}
+                    {currentStepIndex < activeTrail.stops.length - 1 ? 'Next Stop' : 'Complete Tour'}
                   </button>
                   <button
+                    type="button"
                     onClick={() => onOpenGisRoute(activeTrail, currentStepIndex)}
-                    className="px-3.5 bg-[#0284c7] hover:bg-[#0369a1] text-white py-3 rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+                    className="min-h-[44px] px-4 bg-[#0284c7] hover:bg-[#0369a1] text-white py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-sm cursor-pointer whitespace-nowrap shrink-0"
                     title="View route line on GIS map"
                   >
                     <Compass className="w-4 h-4 shrink-0" />
@@ -476,7 +489,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                     <button
                       type="button"
                       onClick={scrollToTrailPhotos}
-                      className="px-3.5 bg-[#fee2e2] hover:bg-[#fecaca] text-[#b91c1c] border border-[#b91c1c]/25 py-3 rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
+                      className="min-h-[44px] px-4 bg-[#fee2e2] hover:bg-[#fecaca] text-[#b91c1c] border border-[#b91c1c]/25 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 tabular-nums"
                       title="View public traveler photos for this trail"
                     >
                       <Camera className="w-4 h-4 shrink-0" />
@@ -518,8 +531,9 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                     </button>
                     <button
                       type="button"
+                      aria-expanded={isTrailPhotosOpen}
                       onClick={() => setIsTrailPhotosOpen((v) => !v)}
-                      className="w-8 h-8 rounded-full bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#374151] flex items-center justify-center transition cursor-pointer"
+                      className="w-9 h-9 rounded-full bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#374151] flex items-center justify-center transition cursor-pointer"
                       aria-label={isTrailPhotosOpen ? 'Collapse trail photos' : 'Expand trail photos'}
                     >
                       {isTrailPhotosOpen ? (
@@ -571,7 +585,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                           return (
                             <div
                               key={photo.id}
-                              className="rounded-2xl overflow-hidden border border-[#e5e7eb] bg-[#f9fafb] flex flex-col"
+                              className="rounded-2xl overflow-hidden border border-[#e5e7eb] bg-[#f9fafb] flex flex-col min-w-0"
                             >
                               <button
                                 type="button"
@@ -590,9 +604,9 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                                 </span>
                               </button>
 
-                              <div className="p-2.5 flex-1 flex flex-col justify-between gap-1.5 text-[11px]">
-                                <div>
-                                  <div className="flex items-center justify-between gap-1">
+                              <div className="p-2.5 flex-1 flex flex-col justify-between gap-1.5 text-[11px] min-w-0">
+                                <div className="min-w-0">
+                                  <div className="flex items-center justify-between gap-1 min-w-0">
                                     <span className="font-bold text-[#111827] truncate">
                                       {photo.authorName}
                                     </span>
@@ -601,7 +615,7 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
                                     </span>
                                   </div>
                                   {photo.caption && (
-                                    <p className="text-[#374151] mt-1 line-clamp-2 leading-snug">
+                                    <p className="text-[#374151] mt-1 line-clamp-2 leading-snug break-words">
                                       {photo.caption}
                                     </p>
                                   )}
@@ -662,84 +676,94 @@ export const RoutesScreen: React.FC<RoutesScreenProps> = ({
 
       {/* All Curated Trails List */}
       <div className="space-y-4">
-        {CURATED_TRAILS.map((trail) => (
-          <div
-            key={trail.id}
-            className="bg-white rounded-3xl overflow-hidden border border-[#e5e7eb] shadow-sm hover:shadow-md transition duration-200 flex flex-col sm:flex-row"
-          >
-            <div className="relative h-44 sm:h-auto sm:w-56 shrink-0 bg-[#f3f4f6]">
-              <ArtworkImage
-                src={trail.imageUrl}
-                alt={trail.title}
-                surveyCode={trail.number}
-                regionLabel={trail.sestieriCovered.map(getRegionDisplayName).join(' • ') || 'Venice'}
-                className="w-full h-full object-cover"
-              />
-              <span className="absolute top-3 left-3 bg-black/80 text-white backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold">
-                {trail.number}
-              </span>
-            </div>
-
-            <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  {trail.rating !== undefined ? (
-                    <div className="flex items-center gap-1 text-xs font-bold text-[#111827]">
-                      <Star className="w-3.5 h-3.5 fill-[#b91c1c] text-[#b91c1c]" />
-                      <span>{trail.rating} ({trail.reviewsCount})</span>
-                    </div>
-                  ) : (
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#b91c1c]">
-                      {trail.sestieriCovered.map(getRegionDisplayName).join(' • ') || 'Venice'} • Survey123
-                    </span>
-                  )}
-                  {trail.featuredBadge && (
-                    <span className="bg-[#b91c1c] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-                      {trail.featuredBadge}
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="font-display font-bold text-lg text-[#111827] leading-snug">
-                  {trail.title}
-                </h3>
-                <p className="text-xs text-[#45464d] mt-1.5 leading-relaxed line-clamp-2">
-                  {trail.description}
-                </p>
-
-                <div className="flex items-center gap-3 mt-3 text-xs text-[#76777d] font-semibold">
-                  <span>~{trail.distanceKm} km est.</span>
-                  <span>•</span>
-                  <span>~{trail.estimatedMinutes} min est.</span>
-                  <span>•</span>
-                  <span>{trail.stopsCount} stops</span>
-                </div>
+        {CURATED_TRAILS.map((trail) => {
+          const regionsLabel =
+            trail.sestieriCovered.map(getRegionDisplayName).join(' · ') || 'Venice';
+          return (
+            <article
+              key={trail.id}
+              className="bg-white rounded-3xl overflow-hidden border border-[#e5e7eb] shadow-sm hover:shadow-md transition duration-200 flex flex-col sm:flex-row"
+            >
+              <div className="relative h-44 sm:h-auto sm:w-56 shrink-0 bg-[#f3f4f6] overflow-hidden">
+                <ArtworkImage
+                  src={trail.imageUrl}
+                  alt={trail.title}
+                  surveyCode={trail.number}
+                  regionLabel={regionsLabel}
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute top-3 left-3 bg-black/80 text-white backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap">
+                  {trail.number}
+                </span>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#f2f4f6] flex items-center justify-between">
-                <div className="flex flex-wrap gap-1">
-                  {trail.tags.slice(0, 2).map((t) => (
-                    <span key={t} className="text-[10px] bg-[#eceef0] text-[#45464d] px-2 py-0.5 rounded-full">
-                      {t}
-                    </span>
-                  ))}
+              <div className="p-4 sm:p-5 flex-1 min-w-0 flex flex-col justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5 min-w-0">
+                    {trail.rating !== undefined ? (
+                      <div className="flex items-center gap-1 text-xs font-bold text-[#111827] min-w-0">
+                        <Star className="w-3.5 h-3.5 fill-[#b91c1c] text-[#b91c1c] shrink-0" />
+                        <span className="tabular-nums">
+                          {trail.rating} ({trail.reviewsCount})
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#b91c1c] min-w-0 break-words">
+                        {regionsLabel} · Survey123
+                      </span>
+                    )}
+                    {trail.featuredBadge && (
+                      <span className="bg-[#b91c1c] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0 max-w-full truncate">
+                        {trail.featuredBadge}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-display font-bold text-lg text-[#111827] leading-snug break-words">
+                    {trail.title}
+                  </h3>
+                  <p className="text-xs text-[#45464d] mt-1.5 leading-relaxed line-clamp-2">
+                    {trail.description}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 text-xs text-[#6b7280] font-semibold tabular-nums">
+                    <span>~{trail.distanceKm} km est.</span>
+                    <span aria-hidden="true">·</span>
+                    <span>~{trail.estimatedMinutes} min est.</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{trail.stopsCount} stops</span>
+                  </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setActiveTrail(trail);
-                    onSelectTrail?.(trail);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="bg-black hover:bg-[#191c1e] text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
-                >
-                  <span>Select Trail</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div className="mt-4 pt-3 border-t border-[#f2f4f6] flex flex-wrap items-center justify-between gap-2.5 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5 min-w-0 flex-1">
+                    {trail.tags.map((t) => (
+                      <span
+                        key={t}
+                        className="text-[10px] font-medium bg-[#eceef0] text-[#45464d] px-2.5 py-0.5 rounded-full max-w-full truncate"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTrail(trail);
+                      onSelectTrail?.(trail);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="min-h-[40px] bg-black hover:bg-[#191c1e] text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+                  >
+                    <span>Select Trail</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </article>
+          );
+        })}
       </div>
 
       {activeTrail && lightboxIndex !== null && trailPhotos[lightboxIndex] && (

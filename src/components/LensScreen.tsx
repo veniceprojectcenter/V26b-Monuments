@@ -453,7 +453,7 @@ export const LensScreen: React.FC<LensScreenProps> = ({
   const hasFeedbackOverlay = !result && (!!noMatchMessage || !!recognitionError);
 
   return (
-    <div className="pt-2 pb-24 px-4 sm:px-6 max-w-2xl mx-auto w-full animate-in fade-in duration-200">
+    <div className="pt-2 pb-24 px-4 sm:px-6 max-w-4xl mx-auto w-full animate-in fade-in duration-200">
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Hidden Dual Native Inputs for iPhone Safari */}
@@ -496,10 +496,12 @@ export const LensScreen: React.FC<LensScreenProps> = ({
         </div>
 
         <button
+          type="button"
           onClick={() => setShowSurveyInfo(!showSurveyInfo)}
           className="shrink-0 p-2.5 rounded-2xl bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#374151] hover:text-[#111827] transition cursor-pointer"
           title="ArcGIS Survey123 Dataset Schema"
           aria-label="Dataset Info"
+          aria-expanded={showSurveyInfo}
         >
           <HelpCircle className="w-4 h-4 text-[#b91c1c]" />
         </button>
@@ -953,7 +955,7 @@ export const LensScreen: React.FC<LensScreenProps> = ({
 
               {/* Additional angles if artwork has 2 photos */}
               {result.monument.galleryImages.length > 1 && (
-                <div className="mb-4 flex items-center gap-2 text-[10px] text-[#6b7280] bg-[#f9fafb] p-2 rounded-2xl border border-[#e5e7eb]">
+                <div className="mb-4 flex flex-wrap items-center gap-2 text-[10px] text-[#6b7280] bg-[#f9fafb] p-2.5 rounded-2xl border border-[#e5e7eb]">
                   <span className="font-bold uppercase tracking-wider shrink-0">
                     All Record Photos ({result.monument.galleryImages.length}):
                   </span>
@@ -984,8 +986,8 @@ export const LensScreen: React.FC<LensScreenProps> = ({
 
               {/* Title & Category */}
               <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <div className="flex items-center gap-1.5 mb-1">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5 mb-1">
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${
                         categoryTheme ? categoryTheme.bg : 'bg-black'
@@ -1026,18 +1028,18 @@ export const LensScreen: React.FC<LensScreenProps> = ({
 
               {/* Survey123 Coordinates & GlobalID */}
               <div className="bg-[#f9fafb] rounded-2xl p-3 border border-[#e5e7eb] text-xs space-y-1.5 mb-3">
-                <div className="flex items-center justify-between text-[#111827]">
-                  <span className="flex items-center gap-1.5 font-bold">
-                    <MapPin className="w-3.5 h-3.5 text-[#b91c1c]" />
-                    <span>{result.monument.locationName}</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[#111827]">
+                  <span className="flex items-center gap-1.5 font-bold min-w-0">
+                    <MapPin className="w-3.5 h-3.5 text-[#b91c1c] shrink-0" />
+                    <span className="truncate">{result.monument.locationName}</span>
                   </span>
-                  <span className="text-[10px] font-mono text-[#6b7280]">
+                  <span className="text-[10px] font-mono text-[#6b7280] shrink-0">
                     Creator: {result.monument.creator}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-[#6b7280] font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#6b7280] font-mono">
                   <span>{result.monument.coordinates.formatted}</span>
-                  <span className="text-[#334155] bg-[#e2e8f0] px-2 py-0.5 rounded-full font-bold text-[10px]">
+                  <span className="text-[#334155] bg-[#e2e8f0] px-2 py-0.5 rounded-full font-bold text-[10px] shrink-0">
                     3D: {result.monument.modelCapturedRaw}
                   </span>
                 </div>

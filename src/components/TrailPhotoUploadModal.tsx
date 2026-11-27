@@ -88,8 +88,17 @@ export const TrailPhotoUploadModal: React.FC<TrailPhotoUploadModalProps> = ({
       setCameraError(null);
       setErrorMessage(null);
       setUploadedPhoto(null);
+      return;
     }
-  }, [isOpen, stopLiveCamera]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, stopLiveCamera, onClose]);
 
   useEffect(() => {
     const videoEl = videoRef.current;
@@ -289,7 +298,7 @@ export const TrailPhotoUploadModal: React.FC<TrailPhotoUploadModalProps> = ({
       />
 
       <div
-        className="bg-white w-full max-w-lg max-h-[92svh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e5e7eb]"
+        className="bg-white w-full max-w-lg max-h-[92dvh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col shadow-2xl border border-[#e5e7eb]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -320,7 +329,7 @@ export const TrailPhotoUploadModal: React.FC<TrailPhotoUploadModalProps> = ({
 
         {uploadedPhoto ? (
           /* Success Screen */
-          <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-center">
+          <div className="p-5 sm:p-6 overflow-y-auto overscroll-contain subtle-scrollbar space-y-4 text-center">
             <div className="w-12 h-12 rounded-full bg-[#ecfdf5] text-[#059669] flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-7 h-7" />
             </div>
@@ -366,7 +375,7 @@ export const TrailPhotoUploadModal: React.FC<TrailPhotoUploadModalProps> = ({
           </div>
         ) : (
           /* Capture + Details Form */
-          <form onSubmit={handlePublishPhoto} className="p-5 overflow-y-auto space-y-4">
+          <form onSubmit={handlePublishPhoto} className="p-5 overflow-y-auto overscroll-contain subtle-scrollbar space-y-4">
             <div className="bg-[#f9fafb] border border-[#e5e7eb] rounded-2xl px-3.5 py-2.5 text-xs text-[#374151]">
               <p className="font-semibold text-[#111827]">
                 Take a photo of yourself along this curated trail

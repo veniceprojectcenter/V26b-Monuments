@@ -17,7 +17,7 @@ export const ArtworkImage: React.FC<ArtworkImageProps> = ({
   alt,
   surveyCode,
   regionLabel,
-  className = 'w-full h-full object-cover',
+  className = 'block w-full h-full object-cover',
   compact = false,
   loading = 'lazy',
   onStatusChange,

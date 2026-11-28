@@ -640,7 +640,12 @@ async function start() {
   });
 }
 
-start().catch((err) => {
-  console.error('Failed to start PreserVenice server:', err);
-  process.exit(1);
-});
+// Vercel imports the Express app as a serverless function; local/Cloud Run deployments start the listener.
+if (process.env.VERCEL !== '1') {
+  start().catch((err) => {
+    console.error('Failed to start PreserVenice server:', err);
+    process.exit(1);
+  });
+}
+
+export default app;

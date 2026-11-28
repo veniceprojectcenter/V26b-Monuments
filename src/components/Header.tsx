@@ -11,6 +11,8 @@ import {
 import { MonumentCategory } from '../types';
 
 interface HeaderProps {
+  language: 'en' | 'it';
+  onLanguageChange: (language: 'en' | 'it') => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   selectedCategory: MonumentCategory | 'All';
@@ -21,6 +23,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  language,
+  onLanguageChange,
   searchQuery,
   onSearchChange,
   selectedCategory,
@@ -50,10 +54,18 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right: PreserVenice Official Mission Statement in Italics */}
+        <div className="flex items-center gap-3">
+        <label className="flex items-center gap-1 rounded-md border border-gray-300 px-2 py-1 text-xs not-italic whitespace-nowrap" aria-label="Language / Lingua">
+          <span data-language-flag aria-hidden="true">{language === 'it' ? '🇮🇹' : '🇬🇧'}</span>
+          <select value={language} onChange={(event) => onLanguageChange(event.target.value as 'en' | 'it')} className="bg-white" aria-label="Language / Lingua">
+            <option value="en">English</option><option value="it">Italiano</option>
+          </select>
+        </label>
         <div className="text-xs sm:text-sm text-[#111827] italic font-serif leading-relaxed max-w-md text-left md:text-right">
           <p>
             PreserVenice is a non-profit organization devoted to the preservation and restoration of public art in Venice, Italy.
           </p>
+        </div>
         </div>
       </div>
 

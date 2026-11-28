@@ -88,7 +88,6 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
   quotaExceeded = false,
   onOpenTrailPhotosInMenu,
 }) => {
-  const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'hybrid'>('satellite');
   const [currentCenter, setCurrentCenter] = useState(
     targetCoords || REGION_MAP_VIEWPORTS[0].coords
   );
@@ -829,7 +828,7 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
                 PreserVenice GIS Cartography
               </span>
               <span className="hidden sm:inline-block bg-[#fee2e2] text-[#b91c1c] text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
-                Google Maps High-Res
+                OpenStreetMap
               </span>
             </div>
             <div className="text-[10px] font-mono text-[#76777d] truncate">
@@ -841,38 +840,7 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
 
         {/* View Switcher & Close Button */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="flex bg-[#eceef0] p-0.5 rounded-xl text-xs font-semibold">
-            <button
-              onClick={() => setMapType('satellite')}
-              className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
-                mapType === 'satellite'
-                  ? 'bg-white text-black shadow-2xs font-bold'
-                  : 'text-[#45464d] hover:text-[#191c1e]'
-              }`}
-            >
-              Satellite
-            </button>
-            <button
-              onClick={() => setMapType('roadmap')}
-              className={`px-2.5 py-1 rounded-lg transition cursor-pointer ${
-                mapType === 'roadmap'
-                  ? 'bg-white text-black shadow-2xs font-bold'
-                  : 'text-[#45464d] hover:text-[#191c1e]'
-              }`}
-            >
-              Roadmap
-            </button>
-            <button
-              onClick={() => setMapType('hybrid')}
-              className={`hidden sm:inline-block px-2.5 py-1 rounded-lg transition cursor-pointer ${
-                mapType === 'hybrid'
-                  ? 'bg-white text-black shadow-2xs font-bold'
-                  : 'text-[#45464d] hover:text-[#191c1e]'
-              }`}
-            >
-              Hybrid
-            </button>
-          </div>
+          <span className="rounded-lg bg-[#eceef0] px-2.5 py-1 text-xs font-semibold text-[#45464d]">OpenStreetMap</span>
 
           <button
             onClick={onClose}
@@ -1144,7 +1112,6 @@ export const GisMapModal: React.FC<GisMapModalProps> = ({
           monuments={filteredMonuments}
           selectedMonument={selectedMonument}
           onSelectMonument={handleSelectPinMonument}
-          mapType={mapType}
           center={currentCenter}
           zoom={currentZoom}
           activeRoute={effectiveRoute}

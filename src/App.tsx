@@ -26,6 +26,8 @@ import {
 } from './types';
 
 export default function App() {
+  const [language, setLanguage] = useState<'en' | 'it'>(() => (localStorage.getItem('vpc-language') as 'en' | 'it') || 'en');
+  const translatedOriginals = React.useRef(new WeakMap<Text, string>());
   const [activeTab, setActiveTab] = useState<ActiveTab>('explore');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<MonumentCategory | 'All'>('All');
@@ -49,6 +51,47 @@ export default function App() {
   const [gisTargetCoords, setGisTargetCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [pendingDonationCollectionId, setPendingDonationCollectionId] = useState<string | null>(null);
   const [openTrailPhotosNonce, setOpenTrailPhotosNonce] = useState(0);
+
+  React.useEffect(() => {
+    const translations: Record<string, string> = {
+      'PreserVenice is a non-profit organization devoted to the preservation and restoration of public art in Venice, Italy.': 'PreserVenice è un’organizzazione senza scopo di lucro dedicata alla conservazione e al restauro dell’arte pubblica a Venezia, Italia.',
+      'PreserVenice Website': 'Sito PreserVenice', 'About': 'Chi siamo', 'Search statues, monuments, reliefs, or GIS coordinates...': 'Cerca statue, monumenti, rilievi o coordinate GIS...',
+      'Search Venetian artworks and GIS coordinates': 'Cerca opere veneziane e coordinate GIS', 'Filter Options': 'Opzioni filtro', 'Filter by Sestiere, Type, Attributes': 'Filtra per sestiere, tipo e attributi',
+      'Interactive GIS Map': 'Mappa GIS interattiva', 'Statues': 'Statue', 'Monuments': 'Monumenti', 'Reliefs': 'Rilievi', 'Surveys': 'Rilievi sul campo', 'All': 'Tutti',
+      'Explore': 'Esplora', 'Collection': 'Collezione', 'Lens': 'Obiettivo', 'Routes': 'Itinerari', 'Support': 'Sostieni', 'Settings': 'Impostazioni',
+      'Explore Venice’s monuments': 'Esplora i monumenti di Venezia', 'Search': 'Cerca', 'Loading...': 'Caricamento...'
+    };
+    localStorage.setItem('vpc-language', language);
+    document.documentElement.lang = language;
+    const originals = translatedOriginals.current;
+    const apply = () => {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode as Text;
+        if (!originals.has(node)) originals.set(node, node.nodeValue || '');
+        const original = originals.get(node) || '';
+        const next = language === 'it' ? (translations[original.trim()] || original) : original;
+        if (node.nodeValue !== next) node.nodeValue = next;
+      }
+      document.querySelectorAll<HTMLInputElement>('[placeholder], [aria-label], [title]').forEach((el) => {
+        for (const attr of ['placeholder', 'aria-label', 'title'] as const) {
+          if (!el.hasAttribute(attr)) continue;
+          const key = `langOriginal${attr}`;
+          if (!el.dataset[key]) el.dataset[key] = el.getAttribute(attr) || '';
+          const original = el.dataset[key];
+          const next = language === 'it' ? (translations[original] || original) : original;
+          if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
+        }
+      });
+      const picker = document.querySelector<HTMLElement>('[data-language-flag]');
+      const flag = language === 'it' ? '🇮🇹' : '🇬🇧';
+      if (picker && picker.textContent !== flag) picker.textContent = flag;
+    };
+    apply();
+    const observer = new MutationObserver(apply);
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [language]);
 
   // Saved user custom route items (anchored to valid Survey123 record)
   const [savedRouteIds, setSavedRouteIds] = useState<string[]>([MONUMENTS[0].id]);
@@ -154,6 +197,8 @@ export default function App() {
       >
         {/* Header with Search and Categories */}
         <Header
+          language={language}
+          onLanguageChange={setLanguage}
           searchQuery={searchQuery}
           onSearchChange={(q) => {
             setSearchQuery(q);

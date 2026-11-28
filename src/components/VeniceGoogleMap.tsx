@@ -100,7 +100,6 @@ interface VeniceGoogleMapProps {
   monuments: Monument[];
   selectedMonument: Monument | null;
   onSelectMonument: (monument: Monument) => void;
-  mapType: 'roadmap' | 'satellite' | 'hybrid';
   center: { lat: number; lng: number };
   zoom: number;
   activeRoute?: CuratedTrail | null;
@@ -277,6 +276,36 @@ function MapCameraController({
   return null;
 }
 
+// Render OpenStreetMap tiles as the actual visible basemap while retaining the existing map projection for pins,
+// navigation controls and route overlays.
+function OpenStreetMapBase() {
+  const map = useMap();
+  useEffect(() => {
+    if (!map || typeof google === 'undefined' || !google.maps?.ImageMapType) return;
+    const tiles = new google.maps.ImageMapType({
+      tileSize: new google.maps.Size(256, 256),
+      minZoom: 1,
+      maxZoom: 19,
+      name: 'OpenStreetMap',
+      alt: 'OpenStreetMap contributors',
+      isPng: true,
+      getTileUrl: (coord: { x: number; y: number }, zoom: number) => {
+        const scale = 2 ** zoom;
+        if (coord.y < 0 || coord.y >= scale) return '';
+        const x = ((coord.x % scale) + scale) % scale;
+        return `https://tile.openstreetmap.org/${zoom}/${x}/${coord.y}.png`;
+      },
+    });
+    map.setOptions({ mapTypeId: 'none', mapTypeControl: false });
+    map.overlayMapTypes.insertAt(0, tiles);
+    return () => {
+      const index = map.overlayMapTypes.getArray().indexOf(tiles);
+      if (index >= 0) map.overlayMapTypes.removeAt(index);
+    };
+  }, [map]);
+  return null;
+}
+
 // Multi-Segment Navigation Route Polyline Layer (strictly renders ONLY authentic street paths):
 // - Active User Approach / Single-Target ahead of user: EMERALD / GREEN
 // - Completed / behind-user segments (both green approach & blue route legs): GREY
@@ -449,7 +478,6 @@ const VeniceGoogleMapInner: React.FC<Omit<VeniceGoogleMapProps, 'apiKey'>> = ({
   monuments,
   selectedMonument,
   onSelectMonument,
-  mapType,
   center,
   zoom,
   activeRoute,
@@ -939,12 +967,13 @@ const VeniceGoogleMapInner: React.FC<Omit<VeniceGoogleMapProps, 'apiKey'>> = ({
         mapId="DEMO_MAP_ID"
         defaultCenter={center}
         defaultZoom={zoom}
-        mapTypeId={mapType}
+        mapTypeId="none"
         gestureHandling="greedy"
         internalUsageAttributionIds={ATTRIBUTION_IDS}
         className="w-full h-full"
         style={{ width: '100%', height: '100%' }}
       >
+        <OpenStreetMapBase />
         <MapCameraController
           center={center}
           zoom={zoom}
@@ -960,7 +989,7 @@ const VeniceGoogleMapInner: React.FC<Omit<VeniceGoogleMapProps, 'apiKey'>> = ({
           onUserPanAway={onUserPanAway}
         />
 
-        {/* Google Maps Style Authentic Pedestrian Navigation Polyline Layer */}
+        {/* Pedestrian navigation route layer */}
         <NavigationRoutePolyline
           completedApproachPath={completedApproachPath}
           activeApproachPath={activeApproachPath}
@@ -1097,6 +1126,9 @@ const VeniceGoogleMapInner: React.FC<Omit<VeniceGoogleMapProps, 'apiKey'>> = ({
           );
         })}
       </Map>
+      <div className="absolute bottom-1 right-1 z-10 rounded-sm bg-white/85 px-1.5 py-0.5 text-[10px] text-slate-700">
+        © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="underline">OpenStreetMap contributors</a>
+      </div>
 
       {/* Calculating Pedestrian Route Indicator */}
       {(isCalculatingRoute || isReroutingLeg) && (
